@@ -1,0 +1,17 @@
+name: CI - AgroTrack
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+      - name: Validar estructura del proyecto
+        run: |
+          echo "Validando el repositorio de AgroTrack..."
+          ls -la
+          echo "Validacion completada correctamente."
