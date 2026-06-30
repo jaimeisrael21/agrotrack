@@ -1,0 +1,31 @@
+name: Control de Calidad (QA)
+
+on:
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  qa-gate:
+    name: Validacion QA antes de produccion
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Compilar candidato a produccion
+        run: |
+          mkdir -p out
+          javac -d out src/ControlCalidad.java test/ControlCalidadTest.java
+
+      - name: Ejecutar pruebas de QA
+        run: java -cp out ControlCalidadTest
