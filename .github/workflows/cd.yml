@@ -1,17 +1,15 @@
-name: Integracion Continua (CI)
+name: Despliegue Continuo (CD)
 
 on:
   push:
-    branches: ["develop"]
-  pull_request:
-    branches: ["develop"]
+    branches: ["main"]
 
 permissions:
   contents: read
 
 jobs:
-  build-test:
-    name: Compilar y probar en develop
+  deploy:
+    name: Despliegue simulado a produccion
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +22,16 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Compilar codigo Java
+      - name: Compilar version final
         run: |
           mkdir -p out
           javac -d out src/ControlCalidad.java test/ControlCalidadTest.java
 
-      - name: Ejecutar pruebas
+      - name: Ejecutar pruebas antes del despliegue
         run: java -cp out ControlCalidadTest
+
+      - name: Ejecutar modulo en produccion
+        run: java -cp out ControlCalidad 24 26 25
+
+      - name: Registrar despliegue
+        run: echo "Despliegue simulado completado para AgroTrack."
