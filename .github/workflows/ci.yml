@@ -1,17 +1,33 @@
-name: CI - AgroTrack
+name: Integracion Continua (CI)
+
 on:
   push:
-    branches: [ main, develop ]
+    branches: ["develop"]
   pull_request:
-    branches: [ main, develop ]
+    branches: ["develop"]
+
+permissions:
+  contents: read
+
 jobs:
-  validar:
+  build-test:
+    name: Compilar y probar en develop
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout del repositorio
+      - name: Clonar repositorio
         uses: actions/checkout@v4
-      - name: Validar estructura del proyecto
+
+      - name: Instalar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Compilar codigo Java
         run: |
-          echo "Validando el repositorio de AgroTrack..."
-          ls -la
-          echo "Validacion completada correctamente."
+          mkdir -p out
+          javac -d out src/ControlCalidad.java test/ControlCalidadTest.java
+
+      - name: Ejecutar pruebas
+        run: java -cp out ControlCalidadTest
