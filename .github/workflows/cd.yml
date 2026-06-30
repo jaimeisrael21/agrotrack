@@ -1,0 +1,37 @@
+name: Despliegue Continuo (CD)
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Despliegue simulado a produccion
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Compilar version final
+        run: |
+          mkdir -p out
+          javac -d out src/ControlCalidad.java test/ControlCalidadTest.java
+
+      - name: Ejecutar pruebas antes del despliegue
+        run: java -cp out ControlCalidadTest
+
+      - name: Ejecutar modulo en produccion
+        run: java -cp out ControlCalidad 24 26 25
+
+      - name: Registrar despliegue
+        run: echo "Despliegue simulado completado para AgroTrack."
